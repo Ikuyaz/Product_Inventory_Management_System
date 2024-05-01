@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Dashboard_PIMS</title>
+
+  <!-- Bootstrap core CSS -->
+  <link href="../css/bootstrap.css" rel="stylesheet">
+
+  <!-- Add custom CSS here -->
+  <link href="../css/home.css" rel="stylesheet">
+  <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+  <!-- Page Specific CSS -->
+  <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<style>
+  #revenueBarChart {
+    padding: 20px;
+  }
+
+  /* Style the chart canvas */
+  #revenueBarChart canvas {
+    border: 1px solid #ddd;
+    /* Add a border */
+    border-radius: 5px;
+    /* Round the corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    /* Add a subtle shadow */
+  }
+</style>
+
+<body>
+
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="home.html">Warehouse Expertists</a>
+      </div>
+
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse navbar-ex1-collapse">
+        <ul class="nav navbar-nav side-nav">
+          <li class="active"><a href="home.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+          <li><a href="manageInv.html"><i class="fa fa-bar-chart-o"></i> Manage Inventory</a></li>
+          <li><a href="manageOrder.html"><i class="fa fa-table"></i> Manage Order</a></li>
+          <li><a href="manageSup.html"><i class="fa fa-edit"></i> Manage Supplier</a></li>
+          <li><a href="trackInv.html"><i class="fa fa-font"></i> Track Inventory</a></li>
+          <li><a href="trackOrder.html"><i class="fa fa-desktop"></i> Track & Ship Order</a></li>
+        </ul>
+
+        <ul class="nav navbar-nav navbar-right navbar-user">
+          <li class="dropdown user-dropdown">
+            <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span
+                id="userIdDisplay"></span> <b class="caret"></b></a>
+
+            <ul class="dropdown-menu">
+              <li><a href="#" id="logoutLink"><i class="fa fa-power-off"></i> Log Out</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div><!-- /.navbar-collapse -->
+    </nav>
+
+    <div id="page-wrapper">
+
+      <div class="row">
+        <div class="col-lg-12">
+          <h1>Dashboard <small>Statistics Overview</small></h1>
+          <ol class="breadcrumb">
+            <li class="active"><i class="fa fa-dashboard"></i> Dashboard</li>
+          </ol>
+          <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            Welcome to Warehouse Expertists
+          </div>
+        </div>
+      </div><!-- /.row -->
+
+      <div class="row">
+        <div class="col-lg-3">
+          <div class="panel panel-info">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <i class="fa fa-codepen fa-5x"></i>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <p class="announcement-heading" id="inventoryCount"></p>
+                  <p class="announcement-text">Inventory</p>
+                </div>
+              </div>
+            </div>
+            <a href="manageInv.html">
+              <div class="panel-footer announcement-bottom">
+                <div class="row">
+                  <div class="col-xs-6">
+                    View Inventory
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    <i class="fa fa-arrow-circle-right"></i>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="panel panel-warning">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <i class="fa fa-check fa-5x"></i>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <p class="announcement-heading" id="suppCount"></p>
+                  <p class="announcement-text">Supplier</p>
+                </div>
+              </div>
+            </div>
+            <a href="manageSup.html">
+              <div class="panel-footer announcement-bottom">
+                <div class="row">
+                  <div class="col-xs-6">
+                    Supplier Lists
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    <i class="fa fa-arrow-circle-right"></i>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="panel panel-danger">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <i class="fa fa-tasks fa-5x"></i>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <p class="announcement-heading" id="orderCount"></p>
+                  <p class="announcement-text">Incomplete Order</p>
+                </div>
+              </div>
+            </div>
+            <a href="manageOrder.html">
+              <div class="panel-footer announcement-bottom">
+                <div class="row">
+                  <div class="col-xs-6">
+                    Manage Order
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    <i class="fa fa-arrow-circle-right"></i>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+        <div class="col-lg-3">
+          <div class="panel panel-success">
+            <div class="panel-heading">
+              <div class="row">
+                <div class="col-xs-6">
+                  <i class="fa fa-check fa-5x"></i>
+                </div>
+                <div class="col-xs-6 text-right">
+                  <p class="announcement-heading" id="completeCount"></p>
+                  <p class="announcement-text">Completed Order</p>
+                </div>
+              </div>
+            </div>
+            <a href="trackOrder.html">
+              <div class="panel-footer announcement-bottom">
+                <div class="row">
+                  <div class="col-xs-6">
+                    Complete Orders
+                  </div>
+                  <div class="col-xs-6 text-right">
+                    <i class="fa fa-arrow-circle-right"></i>
+                  </div>
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="panel panel-custom">
+            <div class="panel-heading panel-custom-heading">
+              <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Revenue Bar Chart</h3>
+            </div>
+            <div class="panel-body panel-custom-body">
+              <canvas id="revenueBarChart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="panel panel-custom">
+            <div class="panel-heading panel-custom-heading">
+              <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Total Sales Pie Chart</h3>
+            </div>
+            <div class="panel-body panel-custom-body">
+              <div class="flot-chart" style="text-align: center;">
+                <div class="flot-chart-content" id="salesChart"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row" style="margin-top: 20px;">
+        <div class="col text-right mb-3">
+          <button onclick="exportRevenueDataToExcel()">Export to Excel</button>
+          <button onclick="exportToPDF()">Export to PDF</button>
+        </div>
+      </div>
+
+
+    </div><!-- /#page-wrapper -->
+
+  </div><!-- /#wrapper -->
+
+  <!-- JavaScript -->
+  <script src="js/jquery-1.10.2.js"></script>
+  <script src="js/bootstrap.js"></script>
+
+  <!-- Page Specific Plugins -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
+  <script src="js/morris/chart-data-morris.js"></script>
+  <script src="js/tablesorter/jquery.tablesorter.js"></script>
+  <script src="js/tablesorter/tables.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+<!-- Include jsPDF for PDF export -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+
+<!-- Include the jsPDF autoTable plugin -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.23/jspdf.plugin.autotable.min.js"></script>
+  <script>
+    // Function to retrieve user_id from localStorage
+    function getUserId() {
+      return localStorage.getItem('user_id');
+    }
+
+    // Function to set user_id in localStorage
+    function setUserId(userId) {
+      localStorage.setItem('user_id', userId);
+    }
+
+    // Function to clear user_id from localStorage
+    function clearUserId() {
+      localStorage.removeItem('user_id');
+    }
+
+    // Function to retrieve a query parameter value by name
+    function getQueryParam(param) {
+      var searchParams = new URLSearchParams(window.location.search);
+      return searchParams.get(param);
+    }
+
+    // Check if user_id is present in the URL, if so, save it to localStorage
+    var userIdFromUrl = getQueryParam('user_id');
+    if (userIdFromUrl) {
+      setUserId(userIdFromUrl);
+    }
+
+    // Display the user_id in an element with id="userIdDisplay"
+    document.getElementById('userIdDisplay').textContent = getUserId() || 'Guest';
+
+    // Example logout function that clears the user_id from localStorage
+    function logout() {
+      clearUserId();
+      // Redirect to login page or home page after logout
+      window.location.href = '../index.html';
+    }
+
+    // Attach the logout function to logout link/button
+    document.getElementById('logoutLink').addEventListener('click', function (event) {
+      event.preventDefault(); // Prevent the default anchor behavior
+      logout();
+    });
+
+
+    // Assuming chartData1, chartData2, chartData3, and chartData4 are your data for the four charts
+    var revenueDataForExport = [];  // Array to hold data for export
+    $(document).ready(function () {
+  $.ajax({
+    url: '../php/dashboard/loadRevenue.php',
+    type: 'GET',
+    dataType: 'json',
+    success: function (data) {
+      if (data.error) {
+        console.error('Error:', data.error);
+      } else {
+        // Ensure dates are sorted
+        data.dates.sort(function (a, b) {
+          return new Date(a) - new Date(b);
+        });
+
+        // Prepare data for chart and export
+        revenueDataForExport = data.dates.map((date, index) => ({
+          Date: date,
+          Revenue: data.revenues[index]
+          
+        }));
+
+        var ctx = document.getElementById('revenueBarChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.dates.map(date => new Date(date)),
+            datasets: [{
+              label: 'Daily Revenue',
+              data: data.revenues,
+              borderColor: '#4e73df',
+              backgroundColor: 'rgba(0, 0, 0, 0)',
+              fill: false,
+              pointRadius: 3,
+              pointBackgroundColor: '#4e73df',
+              pointBorderColor: '#4e73df'
+            }]
+          },
+          options: {
+            scales: {
+              yAxes: [{
+                ticks: {
+                  beginAtZero: true,
+                  callback: function (value) { return '$' + value.toFixed(2); }
+                }
+              }],
+              xAxes: [{
+                type: 'time',
+                time: {
+                  unit: 'day',
+                  tooltipFormat: 'MMM DD',
+                  displayFormats: {
+                    day: 'MMM DD'
+                  }
+                }
+              }]
+            },
+            legend: {
+              display: true
+            },
+            responsive: true,
+            maintainAspectRatio: false
+          }
+        });
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error('AJAX Error:', status, error);
+    }
+  });
+});
+
+
+
+    $(document).ready(function () {
+      $.ajax({
+        url: '../php/dashboard/loadSales.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+          if (data.error) {
+            console.error('Error:', data.error);
+          } else {
+            // Initialize the Morris Bar chart with the data
+            Morris.Bar({
+              element: 'salesChart',
+              data: data,
+              xkey: 'product_name', // Key for x-axis data
+              ykeys: ['quantity_sold'], // Key for y-axis data
+              labels: ['Quantity Sold'], // Label for y-axis
+              barColors: function (row, series, type) {
+                if (type === 'bar') {
+                  var red = Math.ceil(150 * row.y / this.ymax);
+                  return 'rgb(' + red + ',0,0)';
+                }
+                else {
+                  return '#000';
+                }
+              }, // Dynamic color for bars
+              resize: true,
+              gridTextColor: '#5A5A5A', // Change grid text color
+              gridTextSize: 14, // Change grid text size
+              gridTextFamily: 'Arial' // Change grid text font
+            });
+          }
+        },
+        error: function (xhr, status, error) {
+          console.error('AJAX Error:', status, error);
+        }
+      });
+    });
+
+    function updateOrderCount() {
+      $.ajax({
+        url: '../php/manageOrder/updateOrderCount.php', // Endpoint to fetch order count
+        method: 'POST',
+        dataType: 'json', // Expect a JSON response
+        success: function (response) {
+          console.log(response); // Log the response
+          $('#orderCount').text(response.count); // Update the paragraph with the received count
+        },
+        error: function (xhr, status, error) {
+          console.error(xhr.responseText); // Log any errors
+        }
+      });
+    }
+
+    // Call the function when the page loads
+    $(document).ready(function () {
+      updateOrderCount();
+    });
+    function updateCompletedOrderCount() {
+      $.ajax({
+        url: '../php/manageOrder/updateCompleteCount.php', // Endpoint to fetch order count
+        method: 'POST',
+        dataType: 'json', // Expect a JSON response
+        success: function (response) {
+          console.log(response); // Log the response
+          $('#completeCount').text(response.count); // Update the paragraph with the received count
+        },
+        error: function (xhr, status, error) {
+          console.error(xhr.responseText); // Log any errors
+        }
+      });
+    }
+
+    // Call the function when the page loads
+    $(document).ready(function () {
+      updateCompletedOrderCount();
+    });
+
+    $(document).ready(function () {
+      // Function to update the inventory count
+      function updateInventoryCount() {
+        $.ajax({
+          url: '../php/getProductCounter.php', // Adjust the path as necessary
+          type: 'GET',
+          success: function (data) {
+            if (!isNaN(data)) {
+              $('#inventoryCount').text(data); // Update the text of the inventory count element
+            } else {
+              $('#inventoryCount').text('Error'); // Display error if the response is not a number
+            }
+          },
+          error: function () {
+            $('#inventoryCount').text('Error'); // Display error on AJAX error
+          }
+        });
+      }
+
+      // Call the function when the document is ready
+      updateInventoryCount();
+    });
+
+    $(document).ready(function () {
+      // Function to update the inventory count
+      function updateSupplierCount() {
+        $.ajax({
+          url: '../php/dashboard/loadSupp.php', // Adjust the path as necessary
+          type: 'GET',
+          success: function (data) {
+            if (!isNaN(data)) {
+              $('#suppCount').text(data); // Update the text of the inventory count element
+            } else {
+              $('#suppCount').text('Error'); // Display error if the response is not a number
+            }
+          },
+          error: function () {
+            $('#suppCount').text('Error'); // Display error on AJAX error
+          }
+        });
+      }
+
+      // Call the function when the document is ready
+      updateSupplierCount();
+    });
+
+    function exportRevenueDataToExcel() {
+  const worksheet = XLSX.utils.json_to_sheet(revenueDataForExport);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Revenue Data");
+  XLSX.writeFile(workbook, "RevenueData.xlsx");
+}
+function exportToPDF() {
+    // Correctly instantiate jsPDF
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    // Fetch and prepare data
+    $.ajax({
+        url: '../php/dashboard/loadRevenue.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function (data) {
+            if (data.error) {
+                console.error('Error:', data.error);
+            } else {
+                let preparedData = prepareDataForPDF(data);
+                // Use autoTable with the correct reference
+                doc.autoTable({
+                    head: [['Date', 'Revenue']],
+                    body: preparedData.map(item => [item.Date, item.Revenue])
+                });
+                doc.save("RevenueDetails.pdf");
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('AJAX Error:', status, error);
+        }
+    });
+}
+
+function prepareDataForPDF(data) {
+    let rows = [];
+    if (data.dates && data.revenues && Array.isArray(data.dates) && Array.isArray(data.revenues)) {
+        data.dates.forEach((date, index) => {
+            rows.push({
+                Date: date,
+                Revenue: data.revenues[index].toFixed(2)  // Assuming revenue needs to be formatted to two decimal places
+            });
+        });
+    } else {
+        console.error('Unexpected data structure:', data);
+    }
+    return rows;
+}
+
+  </script>
+
+  </script>
+
+</body>
+
+</html>

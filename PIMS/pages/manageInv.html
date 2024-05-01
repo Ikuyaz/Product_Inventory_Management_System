@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Manage Inventory</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="../css/home.css" rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+  </head>
+  <style>
+    .table-custom {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-custom thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+    }
+
+    .table-custom tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+</style>
+
+  <body>
+
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="home.html">Warehouse Expertists</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav side-nav">
+            <li><a href="home.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li class="active"><a href="manageInv.html"><i class="fa fa-bar-chart-o"></i> Manage Inventory</a></li>
+            <li><a href="manageOrder.html"><i class="fa fa-table"></i> Manage Order</a></li>
+            <li><a href="manageSup.html"><i class="fa fa-edit"></i> Manage Supplier</a></li>
+            <li><a href="trackInv.html"><i class="fa fa-font"></i> Track Inventory</a></li>
+            <li><a href="trackOrder.html"><i class="fa fa-desktop"></i> Track & Ship Order</a></li>
+          </ul>
+
+          <ul class="nav navbar-nav navbar-right navbar-user">
+            <li class="dropdown user-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span id="userIdDisplay"></span> <b class="caret"></b></a>
+
+                <ul class="dropdown-menu">
+                    <li><a href="../index.html"><i class="fa fa-power-off"></i> Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+    <!-- Page Content -->
+    <div id="page-wrapper">
+      <div class="container-fluid mt-5">
+          <div class="row">
+              <div class="col-lg-12">
+                  <h1>Inventory <small>Overview</small></h1>
+                  <div class="alert alert-success alert-dismissable">
+                      <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                      Welcome to Warehouse Expertists
+                  </div>
+              </div>
+          </div><!-- /.row -->
+  
+          <!-- Call updateProductCount() function here -->
+          <script>
+              updateProductCount();
+          </script>
+            <!-- Action buttons -->
+            <div class = "row" style="margin-bottom: 20px;">
+              <div class = "col text-right mb-3">
+                <!-- Button to trigger modal for adding a new product -->
+                <button class="btn btn-primary" data-toggle="modal" data-target="#addProductModal">Add Product</button>
+                <button class="btn btn-secondary" id="updateProductBtn">Update Product</button>
+                <button class="btn btn-danger" onclick="deleteSelectedProducts()">Delete Product</button>
+                <!-- Search bar -->
+            </div>
+        </div>
+        <div class="search-container mb-3">
+          <div class="form-group input-group">
+              <input type="search" id="searchInput" class="form-control" placeholder="Search by Name or SKU" onkeypress="searchProducts()">
+              <span class="input-group-btn">
+                  <button type="button" class="btn btn-default" onclick="searchProducts()">
+                      <i class="fa fa-search"></i>
+                  </button>
+              </span>
+          </div>
+      </div>
+        <div class="table-responsive">
+          <table class="table table-custom">
+              <thead>
+                  <tr>
+                      <th scope="col"> </th>
+                      <th scope="col">Name</th>
+                      <th scope="col">SKU</th>
+                      <th scope="col">Inventory</th>
+                      <th scope="col">Select</th>
+                  </tr>
+              </thead>
+              <tbody id="productTableBody"></tbody>
+          </table>
+      </div>
+    </div>
+</div>
+
+<!-- Modal for adding a new product -->
+<div class="modal" id="addProductModal" tabindex="-1" role="dialog" aria-labelledby="addProductModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addProductModalLabel">Add Product</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <!-- Form for adding a new product -->
+        <form id="addProductForm">
+            <div class="form-group">
+                <label for="productName">Product Name</label>
+                <select class="form-control" id="productName" name="productName" required>
+                    <option value="">Select Product</option>
+                    <!-- Options will be populated dynamically using JavaScript -->
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="productLocation">Product Location</label>
+                <input type="text" class="form-control" id="productLocation" name="productLocation" required>
+            </div>
+            <div class="form-group">
+                <label for="productQuantity">Product Quantity</label>
+                <input type="number" class="form-control" id="productQuantity" name="productQuantity" required>
+            </div>
+            <div class="form-group">
+              <label for="productCost">Product Cost</label>
+              <input type="number" class="form-control" id="productCost" name="productCost" readonly>
+          </div>
+            <div class="form-group">
+                <label for="productPrice">Product Price</label>
+                <input type="number" class="form-control" id="productPrice" name="productPrice" required>
+            </div>
+            <div class="form-group">
+                <label for="supplierContact">Supplier Contact</label>
+                <input type="text" class="form-control" id="supplierContact" name="supplierContact" readonly>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Product</button>
+        </form>
+    </div>    
+    </div>
+  </div>
+</div>
+
+<!-- Modal for updating a product -->
+<div class="modal" id="updateProductModal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <!-- Form for updating a product -->
+        <form id="updateProductForm">
+          <div class="form-group">
+            <label for="updateProductSKU">Product SKU</label>
+            <input type="text" class="form-control" id="updateProductSKU" name="updateProductSKU" readonly>
+          </div>
+          <div class="form-group">
+            <label for="updateProductName">Product Name</label>
+            <input type="text" class="form-control" id="updateProductName" name="updateProductName" required>
+          </div>
+          <div class="form-group">
+            <label for="updateProductLocation">Product Location</label>
+            <input type="text" class="form-control" id="updateProductLocation" name="updateProductLocation" required>
+          </div>
+          <div class="form-group">
+            <label for="updateProductQuantity">Product Quantity</label>
+            <input type="number" class="form-control" id="updateProductQuantity" name="updateProductQuantity" required>
+          </div>
+          <div class="form-group">
+            <label for="updateProductCost">Product Cost</label>
+            <input type="number" class="form-control" id="updateProductCost" name="updateProductCost" readonly>
+          </div>
+          <div class="form-group">
+            <label for="updateProductPrice">Product Price</label>
+            <input type="number" class="form-control" id="updateProductPrice" name="updateProductPrice" required>
+          </div>
+          <div class="form-group">
+            <label for="updateSupplierContact">Supplier Contact</label>
+            <input type="text" class="form-control" id="updateSupplierContact" name="updateSupplierContact" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Update Product</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Include Bootstrap JS, Popper.js, and jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+
+<script>
+  // Function to update product count
+  function updateProductCount() {
+        jQuery.ajax({
+            url: '../php/getProductCounter.php',
+            method: 'GET',
+            success: function(response) {
+                // Update the heading with the product count
+                jQuery('#inventoryHeading').text('Inventory ' + response);
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+            }
+        });
+    }
+
+    // Call the function initially when the page loads
+    updateProductCount();
+
+  // Function to load products and populate the table
+  function loadProducts() {
+    jQuery.ajax({
+      url: '../php/loadProduct.php',
+      method: 'GET',
+      dataType: 'json',
+      success: function(response) {
+        // Check if there are products in the response
+        if (response.length > 0) {
+          // Counter for row numbers
+          var counter = 1;
+
+          // Populate the table with product data
+          jQuery.each(response, function(index, product) {
+            var row = "<tr>" +
+              "<th scope='row'>" + counter + "</th>" +
+              "<td>" + product.product_name + "</td>" +
+              "<td>" + product.product_sku + "</td>" +
+              "<td>" + product.product_quantity + "</td>" +
+              "<td><input type='checkbox' class='productCheckbox' data-product-sku='" + product.product_sku + "'></td>" +
+            "</tr>";
+
+            jQuery("#productTableBody").append(row);
+
+            // Increment the counter for the next row
+            counter++;
+          });
+        } else {
+          // If no products are found, display a message
+          var noProductRow = "<tr><td colspan='5'>No products found</td></tr>";
+          jQuery("#productTableBody").append(noProductRow);
+        }
+
+        // Update the product count
+        updateProductCount();
+        
+      },
+      error: function(jqXHR, textStatus, errorThrown) {
+        console.error('Error:', textStatus, errorThrown);
+        alert("Error loading products. Please check the console for details.");
+      }
+    });
+  }
+
+  // Add form submission handling
+  jQuery(document).ready(function() {
+    jQuery('#addProductForm').submit(function(event) {
+      event.preventDefault();
+      jQuery.ajax({
+        type: 'POST',
+        url: '../php/addProduct.php',
+        data: jQuery(this).serialize(),
+        success: function(response) {
+          console.log('Response:', response);
+          if (response === "success") {
+            alert("Product added successfully!");
+            jQuery('#addProductModal').modal('hide'); // Close the modal
+            location.reload(); // Reload the page
+          } else {
+            alert("Failed to add product. Please check your inputs.");
+          }
+        },
+        error: function(error) {
+          console.error('Error:', error);
+          alert("Error adding product. Please try again later.");
+        }
+      });
+    });
+  });
+
+  // Call the function to load products on page load
+  jQuery(document).ready(function() {
+    loadProducts();
+  });
+
+  // Call the function to update product count on page load
+  jQuery(document).ready(function() {
+    updateProductCount();
+  });
+
+  //update
+  var selectedProductSKU; // Global variable to store the selected product SKU
+
+jQuery(document).ready(function() {
+  // Click event for the "Update Product" button
+  jQuery('#updateProductBtn').click(function() {
+    // Check if a product is selected
+    var selectedCheckbox = jQuery('.productCheckbox:checked');
+    if (selectedCheckbox.length === 1) {
+      // Get the product SKU from the selected checkbox
+      selectedProductSKU = selectedCheckbox.data('product-sku');
+
+      // Fetch product details from the server
+      jQuery.ajax({
+        url: '../php/updateProduct.php',
+        type: 'GET',
+        data: { product_sku: selectedProductSKU },
+        dataType: 'json',
+        success: function(productDetails) {
+          // Check if product details are received successfully
+          if (productDetails && !productDetails.error) {
+            // Populate the form with product details
+            jQuery('#updateProductSKU').val(productDetails.product_sku);
+            jQuery('#updateProductName').val(productDetails.product_name);
+            jQuery('#updateProductLocation').val(productDetails.product_location);
+            jQuery('#updateProductQuantity').val(productDetails.product_quantity);
+            jQuery('#updateProductCost').val(productDetails.product_cost);
+            jQuery('#updateProductPrice').val(productDetails.product_price);
+            jQuery('#updateSupplierContact').val(productDetails.supplier_contact);
+
+            // Show the modal
+            jQuery('#updateProductModal').modal('show');
+          } else {
+            alert('Error fetching product details.');
+          }
+        },
+        error: function() {
+          alert('Error fetching product details.');
+        }
+      });
+    } else {
+      alert("Please select one product to update.");
+    }
+  });
+
+  // Submit update form
+  jQuery('#updateProductForm').submit(function(e) {
+    e.preventDefault();
+    // Add your update logic here
+
+    // Send the updated product details to the server using AJAX
+    jQuery.ajax({
+      url: '../php/updateProduct.php',
+      type: 'POST',
+      data: jQuery.extend(jQuery('#updateProductForm').serializeArray(), [{ name: "updateProductSKU", value: selectedProductSKU }]), // Serialize the form data and add SKU
+      dataType: 'json',
+      success: function(response) {
+        // Check if the update was successful
+        if (response && !response.error) {
+          console.log("Product updated successfully");
+          // Hide the modal after processing
+          jQuery('#updateProductModal').modal('hide');
+          
+          // Display a window prompt for a successful update
+          alert('Product updated successfully');
+          
+          // Reload the screen
+          window.location.reload();
+        } else {
+          alert('Error updating product: ' + response.error);
+        }
+      },
+      error: function() {
+        alert('Error updating product.');
+      }
+    });
+  });
+});
+
+function deleteSelectedProducts() {
+    // Assuming you have multiple checkboxes with the class 'productCheckbox'
+    var selectedCheckbox = jQuery('.productCheckbox:checked');
+
+    if (selectedCheckbox.length === 0) {
+        alert("Please select a product to delete.");
+        return;
+    }
+
+    var selectedProductSKUs = [];
+
+    // Loop through selected checkboxes and get the SKU values
+    selectedCheckbox.each(function() {
+        var productSKU = jQuery(this).data('product-sku');
+        selectedProductSKUs.push(productSKU);
+    });
+
+    var confirmation = confirm("Are you sure you want to delete the selected product(s)?");
+
+    if (confirmation) {
+        // Perform AJAX request to deleteProduct.php
+        jQuery.ajax({
+            type: 'POST',
+            url: '../php/deleteProduct.php',
+            data: { selectedProductSKUs: selectedProductSKUs },
+            dataType: 'json',
+            success: function(response) {
+                alert(response.success || response.error);
+                // Optionally, update the UI or perform additional actions after deletion
+                location.reload();
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    }
+}
+// Searches and filters products based on the input value, updating the display accordingly.
+function searchProducts() {
+  var input = document.getElementById("searchInput").value.toLowerCase().trim();
+  var table = document.getElementById("productTableBody");
+  var rows = table.getElementsByTagName("tr");
+
+  for (var i = 0; i < rows.length; i++) {
+    var nameCell = rows[i].getElementsByTagName("td")[0]; // Name is in the first column (index 0)
+    var skuCell = rows[i].getElementsByTagName("td")[1]; // SKU is in the second column (index 1)
+    
+    if (!nameCell || !skuCell) {
+      // Skip this row if cells are not found
+      console.warn("Cells not found in row:", i);
+      continue;
+    }
+
+    var name = nameCell.innerText.toLowerCase().trim();
+    var sku = skuCell.innerText.toLowerCase().trim();
+
+    // Check if either the name or SKU contains the input keyword (case-insensitive)
+    if (name.includes(input) || sku.includes(input)) {
+      rows[i].style.display = "";
+    } else {
+      rows[i].style.display = "none";
+    }
+  }
+}
+
+$(document).ready(function() {
+    // Function to populate product names dropdown
+    function populateProductNamesDropdown() {
+        $.ajax({
+            url: '../php/manageInv/getProductName.php', // URL to your PHP script that fetches product names
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var productNameDropdown = $('#productName');
+                    productNameDropdown.empty(); // Clear existing options
+                    productNameDropdown.append($('<option>', { value: '', text: 'Select Product' }));
+                    $.each(response.productNames, function(index, productName) {
+                        productNameDropdown.append($('<option>', {
+                            value: productName,
+                            text: productName
+                        }));
+                    });
+                } else {
+                    console.error('Error fetching product names:', response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching product names:', status, error, xhr.responseText);
+            }
+        });
+    }
+
+    // Function to load supplier contact based on selected product name
+    function loadSupplierContact(productName) {
+        $.ajax({
+            url: '../php/loadPhone.php', // URL to your PHP script that fetches supplier contact based on product name
+            type: 'GET',
+            dataType: 'json',
+            data: { productName: productName },
+            success: function(data) {
+                if (data.supplierContacts.length > 0) {
+                    $('#supplierContact').val(data.supplierContacts[0]); // Autofill supplier contact
+                } else {
+                    $('#supplierContact').val(''); // Clear supplier contact if no contacts found
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading supplier contact:', status, error, xhr.responseText);
+            }
+        });
+    }
+
+    // Populate product names dropdown on page load
+    populateProductNamesDropdown();
+
+    // Load supplier contacts when a product is selected
+    $('#productName').change(function() {
+        var selectedProductName = $(this).val();
+        if (selectedProductName !== '') {
+            // If a product is selected, load supplier contacts
+            loadSupplierContact(selectedProductName);
+        } else {
+            // If no product is selected, clear supplier contact field
+            $('#supplierContact').val('');
+        }
+    });
+});
+
+function populateProductNamesDropdown() {
+        $.ajax({
+            url: '../php/manageInv/getProductName.php', // URL to your PHP script that fetches product names
+            type: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var productNameDropdown = $('#productName');
+                    productNameDropdown.empty(); // Clear existing options
+                    productNameDropdown.append($('<option>', { value: '', text: 'Select Product' }));
+                    $.each(response.productNames, function(index, productName) {
+                        productNameDropdown.append($('<option>', {
+                            value: productName,
+                            text: productName
+                        }));
+                    });
+                } else {
+                    console.error('Error fetching product names:', response.error);
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error fetching product names:', status, error, xhr.responseText);
+            }
+        });
+    }
+    // Function to load product cost
+    $(document).ready(function() {
+    // Function to load product cost
+    function loadProductCost(productName) {
+        $.ajax({
+            url: '../php/manageInv/loadPrice.php',
+            type: 'GET',
+            dataType: 'json',
+            data: { productName: productName },
+            success: function(data) {
+                if (data.success && data.product_price !== null) {
+                    // Autofill product cost
+                    $('#productCost').val(data.product_price);
+                } else {
+                    // Clear product cost if no price found
+                    $('#productCost').val('');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error loading product cost:', status, error, xhr.responseText);
+            }
+        });
+    }
+
+    // Populate product names dropdown on page load
+    populateProductNamesDropdown();
+
+    // Load product cost when a product is selected
+    $('#productName').change(function() {
+        var selectedProductName = $(this).val();
+        if (selectedProductName !== '') {
+            // If a product is selected, load product cost
+            loadProductCost(selectedProductName);
+        } else {
+            // If no product is selected, clear product cost field
+            $('#productCost').val('');
+        }
+    });
+});
+
+</script>
+
+</body>
+</html>

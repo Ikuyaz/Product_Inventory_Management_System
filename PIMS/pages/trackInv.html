@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard_PIMS</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="../css/home.css" rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.css">
+  </head>
+
+  <style>
+.panel-custom {
+  border: 2px solid #880d0d; /* Change border color to coral */
+  border-radius: 10px; /* Adjust border radius as needed */
+}
+
+.panel-custom-heading {
+  background-color: #5a0101; /* Change panel heading background color to coral */
+  border-color: #070100; /* Change border color of the panel heading */
+  color: #ffffff; /* Change text color of the panel heading */
+}
+
+.panel-custom-body {
+  border-top: 2px solid #000000; /* Same color as panel border */
+}
+.table-custom {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-custom thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+    }
+
+    .table-custom tbody + tbody {
+        border-top: 2px solid #dee2e6;
+    }
+
+    </style>
+  <body>
+
+    <div id="wrapper">
+
+      <!-- Sidebar -->
+      <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="home.html">Warehouse Expertists</a>
+        </div>
+      
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <div class="collapse navbar-collapse navbar-ex1-collapse">
+          <ul class="nav navbar-nav side-nav">
+            <li><a href="home.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+            <li><a href="manageInv.html"><i class="fa fa-bar-chart-o"></i> Manage Inventory</a></li>
+            <li><a href="manageOrder.html"><i class="fa fa-table"></i> Manage Order</a></li>
+            <li><a href="manageSup.html"><i class="fa fa-edit"></i> Manage Supplier</a></li>
+            <li class="active"><a href="trackInv.html"><i class="fa fa-font"></i> Track Inventory</a></li>
+            <li><a href="trackOrder.html"><i class="fa fa-desktop"></i> Track & Ship Order</a></li>
+          </ul>
+      
+          <ul class="nav navbar-nav navbar-right navbar-user">
+            <li class="dropdown user-dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span id="userIdDisplay"></span> <b class="caret"></b></a>
+      
+                <ul class="dropdown-menu">
+                    <li><a href="../index.html" id="logoutLink"><i class="fa fa-power-off"></i> Log Out</a></li>
+                </ul>
+            </li>
+        </ul>
+        </div><!-- /.navbar-collapse -->
+      </nav>
+
+      <div id="page-wrapper">
+
+        <div class="row">
+          <div class="col-lg-12">
+            <h1>Track Inventory <small>Statistics Overview</small></h1>
+            <ol class="breadcrumb">
+              <li class="active"><i class="fa fa-dashboard"></i>Track Inventory</li>
+            </ol>
+            <div class="alert alert-success alert-dismissable">
+              <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+              Welcome to Warehouse Expertists
+            </div>
+          </div>
+        </div>
+
+        <div class="col-lg-3 col-lg-offset-4">
+          <div class="panel panel-custom">
+            <div class="panel-heading panel-custom-heading">
+              <h3 class="panel-title"><i class="fa fa-long-arrow-right"></i> Custom Inventory Pie Chart</h3>
+            </div>
+            <div class="panel-body panel-custom-body">
+              <div class="flot-chart" style="text-align: center;">
+                <div class="flot-chart-content" id="flot-chart-pie1"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        
+
+        <div class="table-responsive">
+          <table class="table table-custom">
+            <thead class="thead-light">
+              <tr>
+                <th scope="col">Product SKU</th>
+                <th scope="col">Product Supplier</th>
+                <th scope="col">Product Inventory</th>
+                <th scope="col">Product Location</th>
+                <th scope="col">Product Cost (RM)</th>
+                <th scope="col">Product Price (RM)</th>
+                <th scope="col">Product Out for Order</th>
+                <th scope="col">Action</th>
+              </tr>
+            </thead>
+            <tbody id="productTableBody"></tbody>
+          </table>
+        </div>
+      
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
+        <script src="js/morris/chart-data-morris.js"></script>
+        <script src="js/tablesorter/jquery.tablesorter.js"></script>
+        <script src="js/tablesorter/tables.js"></script>
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/morris.js/0.5.1/morris.min.js"></script>
+
+<script>
+  // Fetch product data dynamically
+  $.ajax({
+    url: '../php/trackInv/loadCurrent.php', // URL to your PHP script that fetches the product data
+    type: 'GET',
+    dataType: 'json',
+    success: function(response) {
+      if (response.success) {
+        var products = response.products; // Retrieve the product data from the response
+        var totalQuantity = 0; // Initialize total quantity
+
+        // Calculate total quantity of products
+        for (var i = 0; i < products.length; i++) {
+          totalQuantity += parseInt(products[i].total_quantity);
+        }
+
+        var inventoryCapacity = 1000000; // Maximum capacity of the warehouse inventory
+        var remainingCapacity = inventoryCapacity - totalQuantity; // Calculate remaining storage capacity
+
+        // Prepare data array for Morris.js
+        var chartData = [
+          { label: 'Used Capacity', value: totalQuantity },
+          { label: 'Remaining Capacity', value: remainingCapacity }
+        ];
+
+        // Add product_sku to the labels
+        for (var i = 0; i < products.length; i++) {
+          chartData.push({
+            label: products[i].product_sku, // Include product_sku in the label
+            value: parseInt(products[i].total_quantity)
+          });
+        }
+
+        // Morris.js pie chart example
+// Morris.js pie chart example
+Morris.Donut({
+    element: 'flot-chart-pie1', // Element ID where the chart will be rendered
+    data: chartData,
+    colors: ['#4e73df', '#1cc88a', '#36b9cc'], // Custom colors for the chart slices
+    formatter: function(y) { return y + ' units'; }, // Custom label formatting
+    resize: true, // Whether to redraw the chart on window resize
+    labelColor: '#000000', // Color of the labels
+    backgroundColor: '#ffffff', // Background color of the chart
+    labelTop: true // Labels are drawn inside the donut segments
+});
+
+      } else {
+        console.error('Error fetching product data:', response.error);
+      }
+    },
+    error: function(xhr, status, error) {
+      console.error('Error fetching product data:', status, error, xhr.responseText);
+    }
+  });
+</script>
+
+
+
+
+<script>
+function loadProductTable() {
+    $.ajax({
+        url: '../php/loadProductInv.php',
+        type: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            console.log('Data received:', data); // Log the received data
+            if (data.length > 0) {
+                var tableBody = $('#productTableBody');
+                tableBody.empty();
+
+                $.each(data, function(index, product) {
+                    var row = $('<tr>');
+                    row.append($('<td>').text(product.product_sku));
+                    row.append($('<td>').text(product.supp_id));
+                    row.append($('<td>').text(product.product_quantity));
+                    row.append($('<td>').text(product.product_location));
+                    row.append($('<td>').text(product.product_cost)); // Displaying the original product cost
+                    row.append($('<td>').text(product.product_price));
+
+                    // Retrieve the quantity out for order (cust_items) based on product_name
+                    var productName = product.product_name; // Assuming product_name is unique
+                    $.ajax({
+                        url: '../php/invAfterDeduct.php', // Adjust the URL to your PHP script
+                        type: 'GET',
+                        data: { productName: productName },
+                        dataType: 'json',
+                        success: function(response) {
+                            if (response.success) {
+                                // Display the quantity out for order if available
+                                row.append($('<td>').text(response.custItems));
+                            } else {
+                                // Display 0 if no product out for order
+                                row.append($('<td>').text('0'));
+                            }
+
+                            // Check if product quantity is lower than 10
+                            if (product.product_quantity < 10) {
+                                // Display caution icon with tooltip
+                                var tooltip = $('<span>').attr('class', 'tooltip').text('Stock is low, please contact the supplier and restock');
+                                var icon = $('<i>').attr('class', 'fa fa-exclamation-triangle text-warning').attr('title', 'Stock is low').append(tooltip);
+                                row.append($('<td>').append(icon));
+                            } else {
+                                // Otherwise, display an empty cell
+                                row.append($('<td>'));
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error retrieving cust_items:', status, error, xhr.responseText);
+                            // Display 0 if an error occurs
+                            row.append($('<td>').text('0'));
+                            // Display edit and delete buttons
+                        }
+                    });
+
+                    // Append the row to the table after all data has been collected
+                    tableBody.append(row);
+                });
+            } else {
+                // Display a message if no products found
+                $('#productTableBody').html('<tr><td colspan="8" class="text-center">No products found.</td></tr>');
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error('Error loading product table:', status, error, xhr.responseText);
+        }
+    });
+}
+
+
+
+$(document).ready(function() {
+    loadProductTable();
+});
+
+</script>           

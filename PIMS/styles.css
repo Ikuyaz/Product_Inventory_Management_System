@@ -1,0 +1,155 @@
+/* Reset default styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Apply basic styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+header {
+  background-color: #0056b3; /* Darker Blue */
+  padding: 20px;
+  color: #fff;
+  text-align: center;
+}
+
+nav.sidebar {
+  background-color: #007bff; /* Blue */
+  color: #fff;
+  padding: 20px;
+  width: 200px; /* Fixed width */
+  height: 100vh; /* Full height */
+  position: fixed; /* Fixed Position */
+}
+
+nav.sidebar h2 {
+  padding: 10px 0;
+  font-size: 24px; /* Larger font size */
+  border-bottom: 1px solid #fff; /* Add a bottom border */
+}
+
+nav.sidebar ul {
+  list-style-type: none;
+  padding: 20px 0;
+}
+
+nav.sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 1.2em; /* Increase the font size */
+  display: block; /* Block display */
+  padding: 10px 0; /* Padding for each link */
+  transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+nav.sidebar ul li a:hover {
+  background-color: #0069d9; /* Slightly darker blue on hover */
+}
+
+main.main-content {
+  padding: 20px;
+  background-color: #E9ECEF; /* Light Gray */
+  margin-left: 260px; /* Increase the margin to accommodate larger sidebar text */
+}
+
+main.main-content h2 {
+  color: #0056b3; /* Darker Blue */
+  margin-bottom: 20px; /* Space below the header */
+}
+
+.button-group {
+  margin: 20px 0;
+}
+
+.button-group button {
+  background-color: #28a745; /* Green */
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  margin-right: 10px; /* Space between buttons */
+  cursor: pointer;
+  transition: background-color 0.3s; /* Transition for hover effect */
+}
+
+.button-group button:hover {
+  background-color: #218838; /* Darker Green */
+}
+
+.button-group .delete {
+  background-color: #dc3545; /* Red */
+}
+
+.button-group .delete:hover {
+  background-color: #c82333; /* Darker Red */
+}
+
+footer {
+  background-color: #0056b3; /* Darker Blue */
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  position: fixed; /* Fixed at the bottom */
+  bottom: 0;
+  width: 100%;
+}
+
+/* Add animation styles */
+@keyframes bounce {
+  0% {
+      transform: scale(1);
+  }
+  50% {
+      transform: scale(1.2);
+  }
+  100% {
+      transform: scale(1);
+  }
+}
+
+/* Apply animations and styles */
+.incoming-order {
+  animation: slide-in 1s ease-in-out;
+}
+
+.outgoing-order {
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.outgoing-order.animated.bounce {
+  animation: slide-in 1s ease-in-out;
+}
+
+@keyframes slide-in {
+  0% {
+      opacity: 0;
+      transform: translateY(-50px);
+  }
+  100% {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+.sidebar-nav {
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 260px;
+  height: 100vh;
+  background-color: #0069D9;
+  color: #fff;
+  padding: 20px;
+}
+

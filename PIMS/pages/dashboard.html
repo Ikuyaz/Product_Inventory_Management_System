@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Warehouse Expertist</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <style>
+        /* Reset default styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        /* Apply basic styles */
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        header {
+            background-color: #495057; /* Gray */
+            padding: 20px;
+            color: #fff;
+            text-align: center;
+            position: relative;
+        }
+
+        header img {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        nav.sidebar-nav {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            background-color: #87CEEB; /* Sky Blue */
+            color: #fff;
+            padding: 20px;
+        }
+
+        main.main-content {
+            padding: 20px;
+            background-color: #fff; /* White */
+            margin-left: 260px;
+        }
+        .main-background {
+    background: url('assets/inventory2.png') no-repeat center center fixed;
+    background-size: 50%; /* Adjust this percentage to your preference */
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: -1; /* Send it to the back */
+}
+
+
+        footer {
+            background-color: #87CEEB; /* Sky Blue */
+            padding: 10px;
+            color: #fff;
+            text-align: center;
+        }
+
+        /* New styles for user_id span */
+        span#userIdDisplay {
+            font-weight: bold;
+            margin-left: 5px;
+            color: #fff; /* White color */
+        }
+
+        /* Logout button styles */
+        button#logoutBtn {
+            background-color: #dc3545; /* Red */
+            color: #fff;
+            border: none;
+            padding: 8px 16px;
+            font-size: 14px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's above other elements */
+            display: none; /* Hidden by default */
+        }
+
+        .loading-spinner {
+            border: 8px solid #f3f3f3; /* Light gray */
+            border-top: 8px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Warehouse Expertist</h1>
+    </header>
+
+    <nav class="sidebar">
+        <h2>Menu</h2>
+        <ul>
+            <li><span id="userIdDisplay"></span></li>
+            <li><a href="#">Home</a></li>
+            <li><a href="manageInv.html">Manage Inventory</a></li>
+            <li><a href="#">Manage Order</a></li>
+            <li><a href="#">Manage Supplier</a></li>
+            <li><a href="#">Track Inventory</a></li>
+            <li><a href="#">Track Order</a></li>
+        </ul>
+        <button id="logoutBtn">Logout</button>
+    </nav>
+
+    <main class="main-content">
+        <div class="main-background"></div>
+      <h2>Dashboard</h2>
+      <section class="orders">
+          <article class="incoming-order">
+              <h3>Incoming Order:</h3>
+              <div id="incoming-order-content">
+                  <!-- Content for Incoming Order -->
+              </div>
+          </article>
+  
+          <!-- Add some spacing between articles -->
+          <div style="margin-bottom: 20px;"></div>
+  
+          <div class="loading-overlay" id="loadingOverlay">
+            <div class="loading-spinner"></div>
+        </div>
+          <article class="outgoing-order">
+              <h3>Outgoing Order:</h3>
+              <div id="outgoing-order-content">
+                  <!-- Content for Outgoing Order -->
+              </div>
+          </article>
+      </section>
+  </main>
+  
+
+    <footer>
+        <p>
+            <i class="fas fa-user"></i>
+            &copy; 2023 Company Name. All Rights Reserved.
+        </p>
+    </footer>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <script>
+      // Function to parse query parameters from the URL
+      function getQueryParam(param) {
+          var searchParams = new URLSearchParams(window.location.search);
+          return searchParams.get(param);
+      }
+  
+      // Retrieve the user_id from the URL
+      var userId = getQueryParam('user_id');
+  
+      // Display the user_id in an element with id="userIdDisplay"
+      document.getElementById('userIdDisplay').textContent = userId;
+  
+      // Logout button click event
+      $(document).on('click', '#logoutBtn', function () {
+            // Show loading overlay
+            $('#loadingOverlay').fadeIn();
+
+            // Perform logout actions after 2 seconds
+            setTimeout(function () {
+                console.log('Logout button clicked');
+
+                // Clear session (adjust this based on your session management)
+                // Example: Redirect to index.html
+                window.location.href = 'index.html';
+
+                // Hide loading overlay
+                $('#loadingOverlay').fadeOut();
+            }, 2000); // 2 seconds
+        });
+  </script>

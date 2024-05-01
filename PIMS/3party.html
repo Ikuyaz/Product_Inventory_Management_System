@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Product Listing</title>
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<!-- Include Bootstrap CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<!-- Include Bootstrap JS -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <h2>Product Listing</h2>
+            <div class="table-responsive">
+                <table class="table table-bordered">
+                    <thead class="thead-light">
+                        <tr>
+                            <th scope="col">Product Company</th>
+                            <th scope="col">Product Name</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Select</th> <!-- New column for checkbox -->
+                        </tr>
+                    </thead>
+                    <tbody id="productTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add button at the bottom -->
+<div class="container">
+    <div class="row">
+        <div class="col-md-12 text-center">
+            <button class="btn btn-primary" id="addProductBtn">Add Selected Products</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Function to load products from the database
+    function loadProducts() {
+        $.ajax({
+            url: 'php/3rdloadProduct.php', // Path to your PHP script
+            method: 'GET',
+            dataType: 'json',
+            success: function(response) {
+                // Check if there are products in the response
+                if (response.length > 0) {
+                    $("#productTableBody").empty();
+                    // Populate the table with product data
+                    $.each(response, function(index, product) {
+                        var options = '';
+                    for (var i = 1; i <= product.product_quantity; i++) {
+                        options += '<option value="' + i + '">' + i + '</option>';
+                    }
+                        var row = "<tr>" +
+                            "<td>" + product.user_id + "</td>" +
+                            '<td>' + product.product_name + '</td>' +
+                        '<td>' + product.product_quantity + '</td>' +
+                        '<td>$' + product.product_price + '</td>' +
+                        '<td>' +
+                        '<select class="select-quantity" data-product-id="' + product.product_id + '">' +
+                        options +
+                        '</select>' +
+                        '</td>' +
+                        '<td>' +
+                        '<input type="checkbox" class="product-checkbox" data-product-id="' + product.product_id + '">' +
+                        '</td>' +
+                        '</tr>';
+
+                        $("#productTableBody").append(row);
+                    });
+                } else {
+                    // If no products are found, display a message
+                    var noProductRow = "<tr><td colspan='4'>No products found</td></tr>";
+                    $("#productTableBody").append(noProductRow);
+                }
+            },
+            error: function(jqXHR, textStatus, errorThrown) {
+                console.error('Error:', textStatus, errorThrown);
+                alert("Error loading products. Please check the console for details.");
+            }
+        });
+    }
+    function updateProductQuantity(productName) {
+    $.ajax({
+        url: 'updateProductQuantity.php', // Path to your PHP script to update product quantity
+        method: 'POST',
+        data: {
+            product_name: productName
+        },
+        success: function(response) {
+            console.log('Product quantity updated successfully:', response);
+            // Reload products after successful update
+            loadProducts();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+            alert("Error updating product quantity. Please check the console for details.");
+        }
+    });
+}
+
+    // Call the loadProducts function when the page is ready
+    $(document).ready(function() {
+    loadProducts();
+
+    // Add click event for Add button
+    $(document).on('click', '#addProductBtn', function() {
+    var selectedProducts = [];
+    var userIds = new Set(); // Use a Set to track unique user_ids
+
+    $('.product-checkbox:checked').each(function() {
+        var $tr = $(this).closest('tr');
+        var productId = $(this).data('product-id');
+        var productName = $tr.find('td:eq(1)').text();
+        var productPrice = parseFloat($tr.find('td:eq(3)').text().replace('$', ''));
+        var quantity = parseInt($tr.find('.select-quantity').val(), 10);
+        var userId = $(this).closest('tr').find('td:first').text(); // Assuming user_id is in the first column
+
+        userIds.add(userId); // Add user_id to the Set
+
+        selectedProducts.push({
+            id: productId,
+            name: productName,
+            price: productPrice,
+            quantity: quantity
+        });
+    });
+
+    if (selectedProducts.length === 0) {
+        alert("Please select at least one product.");
+        return; // Stop function execution if no products are selected
+    }
+
+    // Check if more than one unique user_id is present
+    if (userIds.size > 1) {
+        alert("Please select products from the same company.");
+        return; // Stop the function execution
+    }
+
+    // Continue with the prompts if only one user_id is present
+    var customerName = prompt("Please enter your name:");
+    if (customerName === null) return; // If the user cancels the prompt, stop execution
+
+    var address = prompt("Please enter your address:");
+    if (address === null) return; // If the user cancels the prompt, stop execution
+
+    var phoneNumber;
+var isValidPhoneNumber = false;
+var phonePattern = /^\d{3}-\d{7,8}$/;
+
+do {
+    phoneNumber = prompt("Please enter your phone number in the format XXX-XXXXXXX:");
+    
+    // If the user cancels the prompt, return early
+    if (phoneNumber === null) {
+        return;
+    }
+
+    // Validate the phone number against the pattern
+    if (phonePattern.test(phoneNumber)) {
+        isValidPhoneNumber = true;
+    } else {
+        alert("Invalid phone number. Please enter a phone number in the format XXX-XXXXXXX (10-11 digits).");
+    }
+
+} while (!isValidPhoneNumber); // If the user cancels the prompt, stop execution
+
+    var paymentType;
+do {
+    paymentType = prompt("Please select payment type (e.g., Credit Card, Cash on Delivery):");
+    // Check if the user cancels the prompt
+    if (paymentType === null) {
+        return;
+    }
+    // Convert the input to lowercase for case-insensitive comparison
+    paymentType = paymentType.trim().toLowerCase();
+} while (paymentType !== "credit card" && paymentType !== "cash on delivery");
+
+// Convert the input back to title case to match the expected format
+if (paymentType === "credit card") {
+    paymentType = "Credit Card";
+} else if (paymentType === "cash on delivery") {
+    paymentType = "Cash on Delivery";
+} // If the user cancels the prompt, stop execution
+
+    // Assuming all products belong to the same user, take any user_id from the Set
+    var userId = userIds.values().next().value;
+
+    $.ajax({
+        url: 'php/addOrder.php',
+        method: 'POST',
+        data: {
+            user_id: userId, // Include the single user_id in the data sent to the server
+            customer_name: customerName,
+            cust_address: address,
+            cust_number: phoneNumber,
+            payment_type: paymentType,
+            selected_products: JSON.stringify(selectedProducts)
+        },
+        success: function(response) {
+            alert(response); // Display success message
+            location.reload(); // Optionally reload the page to reflect changes
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('Error:', textStatus, errorThrown);
+            alert("Error adding order. Please check the console for details.");
+        }
+    });
+});
+});
+</script>
+
+</body>
+</html>

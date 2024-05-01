@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard_PIMS</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+
+    <!-- Add custom CSS here -->
+    <link href="../css/home.css" rel="stylesheet">
+    <link rel="stylesheet" href="font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <!-- Page Specific CSS -->
+    <link rel="stylesheet" href="http://cdn.oesmith.co.uk/morris-0.4.3.min.css">
+</head>
+<style>
+    .table-custom {
+        border-collapse: collapse;
+        width: 100%;
+        margin-bottom: 1rem;
+        color: #212529;
+        border: 1px solid #dee2e6;
+    }
+
+    .table-custom th,
+    .table-custom td {
+        padding: 0.75rem;
+        vertical-align: top;
+        border-top: 1px solid #dee2e6;
+    }
+
+    .table-custom thead th {
+        vertical-align: bottom;
+        border-bottom: 2px solid #dee2e6;
+        background-color: #f8f9fa;
+    }
+
+    .table-custom tbody+tbody {
+        border-top: 2px solid #dee2e6;
+    }
+</style>
+
+<body>
+
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="home.html">Warehouse Expertists</a>
+            </div>
+
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="collapse navbar-collapse navbar-ex1-collapse">
+                <ul class="nav navbar-nav side-nav">
+                    <li><a href="home.html"><i class="fa fa-dashboard"></i> Dashboard</a></li>
+                    <li><a href="manageInv.html"><i class="fa fa-bar-chart-o"></i> Manage Inventory</a></li>
+                    <li><a href="manageOrder.html"><i class="fa fa-table"></i> Manage Order</a></li>
+                    <li><a href="manageSup.html"><i class="fa fa-edit"></i> Manage Supplier</a></li>
+                    <li><a href="trackInv.html"><i class="fa fa-font"></i> Track Inventory</a></li>
+                    <li class="active"><a href="trackOrder.html"><i class="fa fa-desktop"></i> Track & Ship Order</a>
+                    </li>
+                </ul>
+
+                <ul class="nav navbar-nav navbar-right navbar-user">
+                    <li class="dropdown user-dropdown">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i> <span
+                                id="userIdDisplay"></span> <b class="caret"></b></a>
+
+                        <ul class="dropdown-menu">
+                            <li><a href="../index.html" id="logoutLink"><i class="fa fa-power-off"></i> Log Out</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div><!-- /.navbar-collapse -->
+        </nav>
+
+        <div id="page-wrapper">
+
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1>Track Order <small>Statistics Overview</small></h1>
+                    <ol class="breadcrumb">
+                        <li class="active"><i class="fa fa-dashboard"></i> Track Order</li>
+                    </ol>
+                    <div class="alert alert-success alert-dismissable">
+                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                        Welcome to Warehouse Expertists Track Order Section
+                    </div>
+                </div>
+            </div><!-- /.row -->
+
+            <div class="text-center">
+                <div class="row">
+                    <div class="col-lg-4 col-lg-offset-2">
+                        <div class="panel panel-warning">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <i class="fa fa-check fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <p class="announcement-heading" id="orderCount"></p>
+                                        <p class="announcement-text">To-Do Order</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="manageOrder.html">
+                                <div class="panel-footer announcement-bottom">
+                                    <div class="row">
+                                        <div class="col-xs-6">
+                                            Incomplete Order
+                                        </div>
+                                        <div class="col-xs-6 text-right">
+                                            <i class="fa fa-arrow-circle-right"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="panel panel-success">
+                            <div class="panel-heading">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        <i class="fa fa-comments fa-5x"></i>
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <p class="announcement-heading" id="completeCount"></p>
+                                        <p class="announcement-text">Completed Order</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="panel-footer announcement-bottom">
+                                <div class="row">
+                                    <div class="col-xs-6">
+                                        Complete Orders
+                                    </div>
+                                    <div class="col-xs-6 text-right">
+                                        <i class="fa fa-arrow-circle-right"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- /.row -->
+
+                <!-- Add textbox field in the center of the row -->
+                <form id="orderForm">
+                    <div class="row">
+                        <div class="col-lg-4 col-lg-offset-4">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <input type="text" name="order_code" class="form-control input-lg rounded-pill"
+                                        placeholder="Enter Order Code" required>
+                                    <span class="input-group-btn">
+                                        <button class="btn btn-outline-secondary rounded-circle" type="submit"><i
+                                                class="fa fa-arrow-right"></i></button>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="pendingOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order Code</th>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Customer Name</th>
+                                    <th scope="col">Payment Type</th>
+                                    <th scope="col">Order Amount (RM)</th>
+                                    <th scope="col">Order Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingOrdersTableBody"></tbody> <!-- Unique ID for pending orders table -->
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-top: 20px;">
+                <div class="col-lg-12">
+                    <div class="table-responsive">
+                        <table class="table table-custom" id="completeOrdersTable">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Order ID</th>
+                                    <th scope="col">Date</th>
+                                    <th scope="col">Customer Name</th>
+                                    <th scope="col">Customer Address</th>
+                                    <th scope="col">Customer Phone</th>
+                                    <th scope="col">Order Courier</th>
+                                    <th scope="col">Order Amount (RM)</th>
+                                    <th scope="col">Order Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="completeOrdersTableBody"></tbody> <!-- Unique ID for complete orders table -->
+                        </table>
+                    </div>
+                </div>
+            </div><!-- /.row --><!-- /.row -->
+
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+            <!-- Include Bootstrap JS -->
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+            <!-- Other Page Specific Plugins -->
+            <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+            <script src="http://cdn.oesmith.co.uk/morris-0.4.3.min.js"></script>
+            <script src="js/morris/chart-data-morris.js"></script>
+            <script src="js/tablesorter/jquery.tablesorter.js"></script>
+            <script src="js/tablesorter/tables.js"></script>
+
+            <!-- Custom JavaScript -->
+            <script src="js/jquery-1.10.2.js"></script>
+            <script src="js/bootstrap.js"></script>
+
+            <script>
+                function saveOrderToDatabase(orderData) {
+                    $.ajax({
+                        url: '../php/trackOrder/addCompleteOrder.php',
+                        method: 'POST',
+                        dataType: 'json',
+                        data: {
+                            order_code: orderData.order_code,
+                            user_id: orderData.user_id
+                        },
+                        success: function (response) {
+                            console.log('Order saved successfully:', response);
+                            // Optionally, you can perform any actions after successfully saving the order
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Error saving order:', textStatus, errorThrown);
+                            // Optionally, you can handle errors here
+                        }
+                    });
+                }
+
+                function loadOrders() {
+                    $.ajax({
+                        url: '../php/loadOrder.php',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (response) {
+                            if (response.length > 0) {
+                                $('#pendingOrdersTableBody').empty(); // Clear existing table body
+                                $.each(response, function (index, order) {
+                                    // Create a row with attributes for customer address and phone number
+                                    var row = "<tr data-cust-address='" + order.cust_address + "' data-cust-number='" + order.cust_number + "'>" +
+                                        "<th scope='row'>" + order.order_code + "</th>" +
+                                        "<th scope='row'>" + order.order_id + "</th>" +
+                                        "<td>" + order.order_date + "</td>" +
+                                        "<td>" + order.order_cust + "</td>" +
+                                        "<td>" + order.payment_type + "</td>" +
+                                        "<td>" + order.order_amount + "</td>" +
+                                        "<td class='text-danger'>Incomplete</td>"
+
+                                    "</tr>";
+                                    $('#pendingOrdersTableBody').append(row);
+                                    localStorage.setItem('user_id', order.user_id);
+                                });
+                            } else {
+                                var noOrderRow = "<tr><td colspan='6'>No orders found</td></tr>";
+                                $('#pendingOrdersTableBody').append(noOrderRow);
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            console.error('Error:', textStatus, errorThrown);
+                            alert("Error loading orders. Please check the console for details.");
+                        }
+                    });
+
+                    // Save order to database when Save button is clicked
+                    $('#productTableBody').on('click', '.btn-save-order', function () {
+                        var $row = $(this).closest('tr');
+                        var orderData = {
+                            order_id: $row.find('th').text(),
+                            order_date: $row.find('td:nth-child(2)').text(),
+                            order_cust: $row.find('td:nth-child(3)').text(),
+                            payment_type: $row.find('td:nth-child(4)').text(),
+                            order_amount: $row.find('td:nth-child(5)').text(),
+                            cust_address: $row.data('cust-address'),
+                            cust_number: $row.data('cust-number'),
+                            user_id: $row.data('user-id')
+                        };
+                        saveOrderToDatabase(orderData);
+                    });
+                }
+
+                jQuery(document).ready(function () {
+                    loadOrders();
+                });
+
+                $(document).ready(function () {
+                    $('#orderForm').on('submit', function (e) {
+                        e.preventDefault(); // Prevent the default form submission
+                        var orderCode = $('input[name="order_code"]').val();
+
+                        var userId = localStorage.getItem('user_id');
+                        // Retrieve from local storage
+
+                        if (!userId) {
+                            alert("User ID is not available. Please log in again.");
+                            return;
+                        }
+
+                        if (orderCode.trim() !== '') {
+                            $.ajax({
+                                url: '../php/trackOrder/addCompleteOrder.php',
+                                method: 'POST',
+                                data: {
+                                    order_code: orderCode,
+                                    user_id: userId
+                                },
+                                success: function (response) {
+                                    location.reload();
+                                },
+                                error: function (jqXHR, textStatus, errorThrown) {
+                                    console.error('Error:', textStatus, errorThrown);
+                                    alert("Error processing your request. Please check the console for details.");
+                                }
+                            });
+                        } else {
+                            alert('Please enter an order code.');
+                        }
+                    });
+                });
+                $(document).ready(function () {
+                    // Function to load complete orders
+                    function loadCompleteOrders() {
+                        $.ajax({
+                            url: '../php/trackOrder/loadCompleteOrder.php', // Adjust the URL to your PHP script
+                            method: 'GET',
+                            dataType: 'json',
+                            success: function (response) {
+                                if (response.length > 0) {
+                                    $('#completeOrdersTableBody').empty(); // Clear existing table body
+                                    $.each(response, function (index, order) {
+                                        // Create a row for each order in the complete orders table
+                                        var row = "<tr>" +
+                                            "<td>" + order.order_id + "</td>" +
+                                            "<td>" + "Order Date: " + order.order_date + "<br>" + "Complete Date: " +order.complete_date + "</td>" +
+                                            "<td>" + order.order_cust + "</td>" +
+                                            "<td>" + order.order_address + "</td>" +
+                                            "<td>" + order.cust_number + "</td>" +
+                                            "<td>" + order.order_courier + "</td>" +
+                                            "<td>" + order.order_amount + "</td>" +
+                                            "<td" + (order.order_status === 'Complete' ? " style='color: green;'" : "") + ">" + order.order_status + "</td>" +
+                                            "</tr>";
+                                        $('#completeOrdersTableBody').append(row);
+                                    });
+                                } else {
+                                    var noOrderRow = "<tr><td colspan='8'>No complete orders found</td></tr>";
+                                    $('#completeOrdersTableBody').append(noOrderRow);
+                                }
+                            },
+                            error: function (jqXHR, textStatus, errorThrown) {
+                                console.error('Error:', textStatus, errorThrown);
+                                alert("Error loading complete orders. Please check the console for details.");
+                            }
+                        });
+                    }
+
+                    // Call the function to load complete orders when the document is ready
+                    loadCompleteOrders();
+                });
+                function updateOrderCount() {
+                    $.ajax({
+                        url: '../php/manageOrder/updateOrderCount.php', // Endpoint to fetch order count
+                        method: 'POST',
+                        dataType: 'json', // Expect a JSON response
+                        success: function (response) {
+                            console.log(response); // Log the response
+                            $('#orderCount').text(response.count); // Update the paragraph with the received count
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Log any errors
+                        }
+                    });
+                }
+
+                // Call the function when the page loads
+                $(document).ready(function () {
+                    updateOrderCount();
+                });
+                function updateCompletedOrderCount() {
+                    $.ajax({
+                        url: '../php/manageOrder/updateCompleteCount.php', // Endpoint to fetch order count
+                        method: 'POST',
+                        dataType: 'json', // Expect a JSON response
+                        success: function (response) {
+                            console.log(response); // Log the response
+                            $('#completeCount').text(response.count); // Update the paragraph with the received count
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(xhr.responseText); // Log any errors
+                        }
+                    });
+                }
+
+                // Call the function when the page loads
+                $(document).ready(function () {
+                    updateCompletedOrderCount();
+                });
+
+
+            </script>
